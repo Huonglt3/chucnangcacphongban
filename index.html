@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chức Năng Nhiệm Vụ Các Phòng — VTNet 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #CC0000;
+    --red-dark: #9B0000;
+    --red-light: #E8001A;
+    --white: #FFFFFF;
+    --off-white: #F5F5F5;
+    --gray-light: #E8E8E8;
+    --gray: #8A8A8A;
+    --dark: #1A1A1A;
+    --darker: #111111;
+    --grid-line: rgba(204,0,0,0.08);
+    --font-display: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+    --font-mono: 'Roboto Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* CIRCUIT GRID BACKGROUND */
+  .circuit-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(204,0,0,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(204,0,0,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 64px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 2px solid var(--red);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .nav-logo-mark {
+    width: 36px; height: 36px;
+    background: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 900; font-size: 14px;
+    color: white; letter-spacing: -0.5px;
+  }
+
+  .nav-logo-text {
+    font-family: var(--font-display);
+    font-weight: 700; font-size: 18px;
+    letter-spacing: 2px; color: var(--dark);
+    text-transform: uppercase;
+  }
+
+  .nav-logo-text span { color: var(--red); }
+
+  .nav-links {
+    display: flex; gap: 32px; list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 1.5px; color: var(--gray);
+    text-decoration: none; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--red); }
+
+  .nav-badge {
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--red);
+    border: 1px solid var(--red);
+    padding: 4px 10px;
+    letter-spacing: 1px;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 48px 48px;
+    background: var(--darker);
+    overflow: hidden;
+  }
+
+  .hero-circuit {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(204,0,0,0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(204,0,0,0.1) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .hero-glow {
+    position: absolute; top: 0; right: 0;
+    width: 60%; height: 100%;
+    background: radial-gradient(ellipse at 80% 50%, rgba(204,0,0,0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 1200px; margin: 0 auto; width: 100%;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--red);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 24px; height: 2px; background: var(--red);
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(52px, 8vw, 100px);
+    font-weight: 900;
+    line-height: 0.9;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+
+  .hero-title .accent { color: var(--red); }
+
+  .hero-title .outline {
+    -webkit-text-stroke: 2px rgba(255,255,255,0.3);
+    color: transparent;
+  }
+
+  .hero-sub {
+    font-family: var(--font-body);
+    font-size: 16px; font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+
+  .hero-meta {
+    display: flex; gap: 32px; flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+
+  .hero-meta-item {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .hero-meta-label {
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--red);
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+
+  .hero-meta-value {
+    font-family: var(--font-display);
+    font-size: 20px; font-weight: 700;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+
+  .hero-divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, var(--red) 0%, rgba(204,0,0,0.3) 40%, transparent 100%);
+    margin-bottom: 48px;
+  }
+
+  .hero-departments {
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+
+  .dept-pill {
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 10px 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+  }
+
+  .dept-pill:hover, .dept-pill.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+
+  .hero-scroll {
+    position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: rgba(255,255,255,0.3); letter-spacing: 2px;
+  }
+
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(var(--red), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  /* OVERVIEW SECTION */
+  .section-overview {
+    background: var(--white);
+    padding: 96px 48px;
+    position: relative;
+  }
+
+  .section-overview::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 4px; height: 100%; background: var(--red);
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--red);
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1; height: 1px; max-width: 60px;
+    background: var(--red);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-bottom: 48px;
+    color: var(--dark);
+  }
+
+  .section-title .red { color: var(--red); }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .dept-card {
+    position: relative;
+    background: var(--off-white);
+    padding: 32px 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-top: 3px solid transparent;
+    text-decoration: none; color: inherit;
+    display: block;
+  }
+
+  .dept-card:hover {
+    background: var(--dark);
+    border-top-color: var(--red);
+    transform: translateY(-4px);
+    z-index: 2;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+  }
+
+  .dept-card:hover .dept-num,
+  .dept-card:hover .dept-name,
+  .dept-card:hover .dept-scope { color: white; }
+
+  .dept-card:hover .dept-desc { color: rgba(255,255,255,0.6); }
+
+  .dept-num {
+    font-family: var(--font-display);
+    font-size: 48px; font-weight: 900;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 16px;
+    transition: color 0.3s;
+  }
+
+  .dept-icon {
+    font-size: 28px; margin-bottom: 12px;
+  }
+
+  .dept-name {
+    font-family: var(--font-display);
+    font-size: 17px; font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--dark);
+    margin-bottom: 8px;
+    transition: color 0.3s;
+    line-height: 1.2;
+  }
+
+  .dept-desc {
+    font-size: 13px; color: var(--gray);
+    line-height: 1.5;
+    transition: color 0.3s;
+  }
+
+  .dept-scope {
+    margin-top: 16px;
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--red);
+    letter-spacing: 1px; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  /* DEPARTMENT DETAIL SECTIONS */
+  .dept-section {
+    padding: 96px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dept-section:nth-child(even) { background: var(--off-white); }
+  .dept-section:nth-child(odd) { background: var(--white); }
+
+  .dept-section-inner {
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .dept-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+    margin-bottom: 64px;
+  }
+
+  .dept-header-left {}
+
+  .dept-part-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--red);
+    color: white;
+    padding: 4px 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .dept-main-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    color: var(--dark);
+    line-height: 0.95;
+    margin-bottom: 16px;
+  }
+
+  .dept-main-title .red { color: var(--red); }
+
+  .dept-scope-box {
+    border-left: 3px solid var(--red);
+    padding-left: 16px;
+    margin-top: 24px;
+  }
+
+  .dept-scope-box p {
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  .dept-scope-box strong { color: var(--dark); font-weight: 600; }
+
+  .dept-header-right {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .dept-outline-item {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 16px;
+    border: 1px solid var(--gray-light);
+    background: white;
+    transition: all 0.2s;
+  }
+
+  .dept-outline-item:hover {
+    border-color: var(--red);
+    background: rgba(204,0,0,0.02);
+  }
+
+  .outline-num {
+    font-family: var(--font-display);
+    font-size: 28px; font-weight: 900;
+    color: var(--red);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 40px;
+  }
+
+  .outline-text {
+    font-size: 14px;
+    color: var(--dark);
+    font-weight: 500;
+    line-height: 1.4;
+    padding-top: 4px;
+  }
+
+  /* TASKS GRID */
+  .tasks-grid {
+    display: grid;
+    gap: 2px;
+  }
+
+  .tasks-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .tasks-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .tasks-grid-full { grid-template-columns: 1fr; }
+
+  .task-block {
+    background: var(--dark);
+    padding: 32px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .task-block::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: var(--red);
+  }
+
+  .task-block.light {
+    background: white;
+    color: var(--dark);
+    border: 1px solid var(--gray-light);
+  }
+
+  .task-block.light::before { background: var(--red); }
+
+  .task-block-num {
+    font-family: var(--font-display);
+    font-size: 56px; font-weight: 900;
+    color: rgba(204,0,0,0.2);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .task-block.light .task-block-num { color: rgba(204,0,0,0.15); }
+
+  .task-block-title {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--red);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .task-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .task-list li {
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.8);
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .task-block.light .task-list li { color: var(--dark); }
+
+  .task-list li::before {
+    content: '›';
+    position: absolute; left: 0;
+    color: var(--red); font-weight: 700;
+  }
+
+  .task-list li strong, .task-list li b {
+    color: #FFB3B3;
+    font-weight: 600;
+  }
+
+  .task-block.light .task-list li strong,
+  .task-block.light .task-list li b {
+    color: var(--red);
+  }
+
+  /* ORG STRUCTURE BAR */
+  .org-bar {
+    background: rgba(204,0,0,0.06);
+    border: 1px solid rgba(204,0,0,0.2);
+    padding: 16px 24px;
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 24px;
+  }
+
+  .org-bar-icon { font-size: 18px; color: var(--red); }
+
+  .org-bar-text {
+    font-size: 13px; color: var(--dark); font-weight: 500;
+  }
+
+  .org-bar-text strong { color: var(--red); }
+
+  /* SECTION DARK */
+  .section-dark {
+    background: var(--darker);
+    padding: 96px 48px;
+    position: relative; overflow: hidden;
+  }
+
+  .section-dark .section-title { color: white; }
+  .section-dark .section-label { color: var(--red); }
+
+  .section-dark-circuit {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(204,0,0,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(204,0,0,0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* OBJECTIVE BANNER */
+  .objective-banner {
+    background: var(--red);
+    padding: 24px 48px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px;
+  }
+
+  .objective-banner p {
+    font-family: var(--font-display);
+    font-size: 16px; font-weight: 700;
+    color: white; text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-align: center;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--darker);
+    padding: 48px;
+    border-top: 3px solid var(--red);
+  }
+
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 24px;
+  }
+
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 24px; font-weight: 900;
+    color: white; text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .footer-logo span { color: var(--red); }
+
+  .footer-meta {
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--gray);
+    line-height: 1.8; letter-spacing: 0.5px;
+    text-align: right;
+  }
+
+  /* STICKY NAV DOTS */
+  .nav-dots {
+    position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+    z-index: 99;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gray-light);
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .nav-dot:hover, .nav-dot.active {
+    background: var(--red);
+    transform: scale(1.5);
+  }
+
+  .nav-dot::after {
+    content: attr(data-label);
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--dark); white-space: nowrap;
+    background: white; padding: 3px 8px;
+    opacity: 0; transition: opacity 0.2s;
+    pointer-events: none;
+    border: 1px solid var(--gray-light);
+  }
+
+  .nav-dot:hover::after { opacity: 1; }
+
+  /* ANIMATE IN */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    
+    .hero, .section-overview, .dept-section, .section-dark, footer {
+      padding-left: 20px; padding-right: 20px;
+    }
+
+    .overview-grid { grid-template-columns: 1fr 1fr; }
+    .dept-header { grid-template-columns: 1fr; gap: 32px; }
+    .tasks-grid-3 { grid-template-columns: 1fr; }
+    .tasks-grid-2 { grid-template-columns: 1fr; }
+    .nav-dots { display: none; }
+    
+    .objective-banner { padding: 20px; }
+    .footer-meta { text-align: left; }
+  }
+
+  @media (max-width: 600px) {
+    .overview-grid { grid-template-columns: 1fr; }
+    .hero-meta { gap: 20px; }
+    .hero-departments { flex-direction: column; }
+    .dept-pill { text-align: center; }
+  }
+
+  /* HORIZONTAL RED LINE DECORATION */
+  .red-line { width: 100%; height: 2px; background: var(--red); }
+
+  .section-num {
+    position: absolute; right: 48px; top: 48px;
+    font-family: var(--font-display);
+    font-size: 120px; font-weight: 900;
+    color: rgba(0,0,0,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .section-dark .section-num { color: rgba(255,255,255,0.04); }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<div class="nav-dots">
+  <div class="nav-dot active" data-label="Hero" onclick="scrollTo('#hero')"></div>
+  <div class="nav-dot" data-label="Tổng quan" onclick="scrollTo('#overview')"></div>
+  <div class="nav-dot" data-label="Truyền dẫn" onclick="scrollTo('#truyen-dan')"></div>
+  <div class="nav-dot" data-label="Cơ điện" onclick="scrollTo('#co-dien')"></div>
+  <div class="nav-dot" data-label="IP & BRCĐ" onclick="scrollTo('#ip-brcd')"></div>
+  <div class="nav-dot" data-label="KSVHKT" onclick="scrollTo('#ksvhkt')"></div>
+  <div class="nav-dot" data-label="Hạ tầng" onclick="scrollTo('#ha-tang')"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">VTN</div>
+    <div class="nav-logo-text">Viettel<span>Net</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#overview">Tổng quan</a></li>
+    <li><a href="#truyen-dan">Truyền dẫn</a></li>
+    <li><a href="#co-dien">Cơ điện</a></li>
+    <li><a href="#ip-brcd">IP & BRCĐ</a></li>
+    <li><a href="#ksvhkt">KSVHKT</a></li>
+    <li><a href="#ha-tang">Hạ tầng</a></li>
+  </ul>
+  <div class="nav-badge">2025 — v1.0</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-circuit"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">Tổng Công ty Mạng lưới Viettel — Tài liệu nội bộ</div>
+
+    <h1 class="hero-title">
+      CHỨC NĂNG<br>
+      <span class="accent">NHIỆM VỤ</span><br>
+      <span class="outline">CÁC PHÒNG</span>
+    </h1>
+
+    <p class="hero-sub">
+      Tài liệu đào tạo nội bộ — trình bày chức năng, nhiệm vụ và tổ chức bộ máy của 5 phòng nghiệp vụ thuộc khối KSVHKT · Hạ tầng · Truyền dẫn.
+    </p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Đơn vị</span>
+        <span class="hero-meta-value">VTNet</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Năm</span>
+        <span class="hero-meta-value">2025</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Số phòng</span>
+        <span class="hero-meta-value">05</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Phiên bản</span>
+        <span class="hero-meta-value">v1.0</span>
+      </div>
+    </div>
+
+    <div class="hero-divider"></div>
+
+    <div class="hero-departments">
+      <a href="#truyen-dan" class="dept-pill">A — Truyền dẫn</a>
+      <a href="#co-dien" class="dept-pill">B — Cơ điện</a>
+      <a href="#ip-brcd" class="dept-pill">C — IP & BRCĐ</a>
+      <a href="#ksvhkt" class="dept-pill">D — KSVHKT</a>
+      <a href="#ha-tang" class="dept-pill">E — Hạ tầng</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    SCROLL
+  </div>
+</section>
+
+<!-- OBJECTIVE BANNER -->
+<div class="objective-banner">
+  <p>🎯 MỤC TIÊU ĐÀO TẠO: Giúp CBNV hiểu rõ phạm vi chức năng, các nhóm nhiệm vụ chính và cơ cấu tổ chức để phối hợp công việc hiệu quả</p>
+</div>
+
+<!-- OVERVIEW -->
+<section class="section-overview" id="overview">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label">Tổng quan hệ thống</div>
+    <h2 class="section-title">5 PHÒNG TRONG<br><span class="red">VTNET</span></h2>
+
+    <div class="overview-grid">
+      <!-- A -->
+      <a href="#truyen-dan" class="dept-card">
+        <div class="dept-num">01</div>
+        <div class="dept-icon">📡</div>
+        <div class="dept-name">Phòng Truyền dẫn</div>
+        <div class="dept-desc">Thiết kế & vận hành mạng quang/viba/vsat & mạng cáp.</div>
+        <div class="dept-scope">Phần A</div>
+      </a>
+      <!-- B -->
+      <a href="#co-dien" class="dept-card">
+        <div class="dept-num">02</div>
+        <div class="dept-icon">⚡</div>
+        <div class="dept-name">Phòng Cơ điện</div>
+        <div class="dept-desc">Đảm bảo nguồn điện, điều hòa, hạ tầng cơ điện.</div>
+        <div class="dept-scope">Phần B</div>
+      </a>
+      <!-- C -->
+      <a href="#ip-brcd" class="dept-card">
+        <div class="dept-num">03</div>
+        <div class="dept-icon">🌐</div>
+        <div class="dept-name">Phòng IP & Băng rộng Cố định</div>
+        <div class="dept-desc">Triển khai mạng IP & dịch vụ BRCĐ cho khách hàng.</div>
+        <div class="dept-scope">Phần C</div>
+      </a>
+      <!-- D -->
+      <a href="#ksvhkt" class="dept-card">
+        <div class="dept-num">04</div>
+        <div class="dept-icon">🛡️</div>
+        <div class="dept-name">Phòng KSVHKT</div>
+        <div class="dept-desc">Kiểm soát chất lượng "lớp 2" — KPI/SLA, OS, vật tư, tài sản.</div>
+        <div class="dept-scope">Phần D</div>
+      </a>
+      <!-- E -->
+      <a href="#ha-tang" class="dept-card">
+        <div class="dept-num">05</div>
+        <div class="dept-icon">🏗️</div>
+        <div class="dept-name">Phòng Hạ tầng</div>
+        <div class="dept-desc">Quản lý công trình: triển khai, kiểm soát, nghiệm thu.</div>
+        <div class="dept-scope">Phần E</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION A: TRUYEN DAN -->
+<section class="dept-section" id="truyen-dan">
+  <div class="section-num">A</div>
+  <div class="dept-section-inner">
+    <div class="dept-header">
+      <div class="dept-header-left">
+        <div class="dept-part-tag">Phần A</div>
+        <h2 class="dept-main-title">PHÒNG<br><span class="red">TRUYỀN DẪN</span></h2>
+        <div class="dept-scope-box">
+          <p><strong>Phạm vi:</strong> Mạng truyền dẫn trục liên tỉnh, liên huyện, truy nhập & mạng cáp quang.</p>
+        </div>
+      </div>
+      <div class="dept-header-right">
+        <div class="dept-outline-item">
+          <span class="outline-num">01</span>
+          <span class="outline-text">Nhiệm vụ quy hoạch thiết kế mạng truyền dẫn</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">02</span>
+          <span class="outline-text">Vận hành khai thác thiết bị hệ thống (DWDM, SDH, Viba, VSAT)</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">03</span>
+          <span class="outline-text">Vận hành khai thác mạng cáp quang</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">04</span>
+          <span class="outline-text">Tổ chức bộ máy: Lãnh đạo phòng + Trợ lý nghiệp vụ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tasks-grid tasks-grid-3">
+      <div class="task-block">
+        <div class="task-block-num">①</div>
+        <div class="task-block-title">📐 Quy hoạch Thiết kế</div>
+        <ul class="task-list">
+          <li>Chủ trì xây dựng thiết kế <b>LLD</b> cho node mạng, tuyến truyền dẫn quang, viba/vsat.</li>
+          <li>Thẩm định, phê duyệt thay đổi thiết kế: nâng cấp, di dời, nắn dịch, vu hồi, quang hóa, điểm chết, giảm nghẽn.</li>
+          <li>Triển khai mạng truyền dẫn trục liên tỉnh, liên huyện; phối hợp <b>TTKTTC</b> tại tổng trạm, trục quốc gia/quốc tế.</li>
+          <li>Tối ưu mạng hàng năm; quản lý <b>CSDL</b> & tài nguyên (thiết bị, port, card, dung lượng, cáp quang, sợi quang, tần số viba/vsat).</li>
+        </ul>
+      </div>
+      <div class="task-block">
+        <div class="task-block-num">②</div>
+        <div class="task-block-title">🖥️ VHKT Thiết bị Hệ thống</div>
+        <ul class="task-list">
+          <li>Chịu trách nhiệm VHKT các hệ thống <b>DWDM, SDH, Viba, VSAT</b> trên địa bàn.</li>
+          <li>Thẩm định toàn bộ <b>CR</b>; xây dựng kịch bản <b>ƯCTT/XLSC</b> & bảo trì/bảo dưỡng.</li>
+          <li>Xử lý sự cố leo thang từ <b>FO</b>; đánh giá rủi ro tác động <b>(CAB)</b>; tìm nguyên nhân gốc.</li>
+          <li>Audit hệ thống; tối ưu cảnh báo, công cụ, <b>KPI</b>, tài nguyên.</li>
+        </ul>
+      </div>
+      <div class="task-block">
+        <div class="task-block-num">③</div>
+        <div class="task-block-title">🔌 VHKT Mạng Cáp Quang</div>
+        <ul class="task-list">
+          <li>Quản lý VHKT mạng cáp quang; xây dựng kế hoạch củng cố, bảo dưỡng định kỳ (vu hồi, điểm chết, ngầm hóa, quang hóa, di dời).</li>
+          <li>Bảo dưỡng chuyên sâu trục liên tỉnh, liên huyện; sửa suy hao trục.</li>
+          <li>Phòng chống thiên tai, bão lũ — ƯCTT cho sự cố lớn, đột xuất.</li>
+          <li>Phối hợp <b>EVN, VNPT, Đường sắt, Bộ Công an, Bộ TLTTLL</b> — sửa lỗi, củng cố hạ tầng dùng chung.</li>
+          <li>Phân tích chất lượng mạng cáp quang ngày/tuần/tháng; hỗ trợ Viettel tỉnh/TP.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="org-bar">
+      <span class="org-bar-icon">🏢</span>
+      <span class="org-bar-text"><strong>TỔ CHỨC BỘ MÁY:</strong> Lãnh đạo phòng (Trưởng phòng/Phó phòng) + Trợ lý nghiệp vụ.</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION B: CO DIEN -->
+<section class="dept-section" id="co-dien">
+  <div class="section-num">B</div>
+  <div class="dept-section-inner">
+    <div class="dept-header">
+      <div class="dept-header-left">
+        <div class="dept-part-tag">Phần B</div>
+        <h2 class="dept-main-title">PHÒNG<br><span class="red">CƠ ĐIỆN</span></h2>
+        <div class="dept-scope-box">
+          <p><strong>Vai trò:</strong> Cánh tay nối dài của TCT — quản lý đơn vị OS và các thị trường. Đảm bảo nguồn điện, điều hòa và toàn bộ hạ tầng cơ điện.</p>
+        </div>
+      </div>
+      <div class="dept-header-right">
+        <div class="dept-outline-item">
+          <span class="outline-num">01</span>
+          <span class="outline-text">Cánh tay nối dài của TCT — quản lý đơn vị OS và các thị trường</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">02</span>
+          <span class="outline-text">Điều hành triển khai, kiểm soát chất lượng nghiệm thu cơ điện</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">03</span>
+          <span class="outline-text">Quản lý tài nguyên cơ điện & CSDL; kiểm soát chi phí năng lượng</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">04</span>
+          <span class="outline-text">Bảo dưỡng, xử lý sự cố nguồn; đánh giá rủi ro thiết bị</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tasks-grid tasks-grid-2" style="margin-bottom:2px">
+      <div class="task-block">
+        <div class="task-block-num">①</div>
+        <div class="task-block-title">📋 Điều hành & Kiểm soát Chất lượng</div>
+        <ul class="task-list">
+          <li>Trực tiếp thực hiện cơ điện tại tỉnh/TP; cánh tay nối dài của <b>TCT</b> quản lý <b>OS</b> và các thị trường.</li>
+          <li>Điều hành, kiểm soát, phê duyệt khảo sát các chương trình lắp đặt mới.</li>
+          <li>Hỗ trợ kỹ thuật, phê duyệt nghiệm thu đấu nối, đưa vào sử dụng vật tư/thiết bị cơ điện.</li>
+          <li>Thiết kế <b>calloff</b> tại tỉnh/TP; phê duyệt đề xuất bảo dưỡng/sửa chữa của <b>OS</b>.</li>
+          <li>Chủ trì giám sát thi công tại tổng trạm khu vực, <b>data center</b>, trạm cập bờ.</li>
+        </ul>
+      </div>
+      <div class="task-block">
+        <div class="task-block-num">②</div>
+        <div class="task-block-title">🗄️ Tài nguyên & CSDL</div>
+        <ul class="task-list">
+          <li>Tính toán tối ưu, điều chuyển tài nguyên cơ điện trong khu vực.</li>
+          <li>Kiểm soát <b>CSDL</b> phần mềm quản lý cơ điện — chính xác phục vụ phân tích & quy hoạch.</li>
+          <li>Rà soát, báo cáo số liệu tài nguyên tổng trạm khu vực / <b>data center</b> cho TTCN.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tasks-grid tasks-grid-full">
+      <div class="task-block" style="background:rgba(204,0,0,0.06); color:var(--dark)">
+        <div class="task-block-num" style="color:rgba(204,0,0,0.15)">③</div>
+        <div class="task-block-title" style="">⚠️ Bảo dưỡng · Sự cố · Rủi ro</div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:8px;">
+          <ul class="task-list" style="">
+            <li style="color:var(--dark)">Quản lý kế hoạch bảo dưỡng cơ điện tổng trạm khu vực, <b style="color:var(--red)">BTS</b> (điều hòa, máy phát, rectifier).</li>
+            <li style="color:var(--dark)">Xử lý sự cố nguồn theo quy trình <b style="color:var(--red)">IM/WLA</b>; kiểm soát chi phí năng lượng.</li>
+          </ul>
+          <ul class="task-list">
+            <li style="color:var(--dark)">Rà soát rủi ro hệ thống cơ điện; phối hợp <b style="color:var(--red)">TTCN</b> thử nghiệm giải pháp mới.</li>
+            <li style="color:var(--dark)">Đánh giá thiết bị sử dụng, sửa chữa, thanh lý; phân tích <b style="color:var(--red)">cảnh báo đỏ</b> KPI cơ điện.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="org-bar">
+      <span class="org-bar-icon">🏢</span>
+      <span class="org-bar-text"><strong>TỔ CHỨC BỘ MÁY:</strong> Lãnh đạo phòng (Trưởng/Phó) + Trợ lý nghiệp vụ.</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION C: IP BRCD -->
+<section class="dept-section" id="ip-brcd">
+  <div class="section-num">C</div>
+  <div class="dept-section-inner">
+    <div class="dept-header">
+      <div class="dept-header-left">
+        <div class="dept-part-tag">Phần C</div>
+        <h2 class="dept-main-title">PHÒNG IP &<br><span class="red">BĂNG RỘNG CỐ ĐỊNH</span></h2>
+        <div class="dept-scope-box">
+          <p><strong>Nhiệm vụ cốt lõi:</strong> Triển khai hạ tầng mạng IP & Băng rộng Cố định — thẩm định, vận hành, tối ưu và đảm bảo chất lượng dịch vụ cho khách hàng.</p>
+        </div>
+      </div>
+      <div class="dept-header-right">
+        <div class="dept-outline-item">
+          <span class="outline-num">01</span>
+          <span class="outline-text">Triển khai hạ tầng mạng IP & Băng rộng Cố định</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">02</span>
+          <span class="outline-text">Thẩm định quy hoạch & xử lý yêu cầu dịch vụ (SR)</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">03</span>
+          <span class="outline-text">ƯCTT, XLSC, bảo dưỡng, tối ưu mạng lưới</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">04</span>
+          <span class="outline-text">Đảm bảo KQI — truyền hình & internet; tự động hóa & đào tạo</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tasks-grid tasks-grid-2">
+      <div class="task-block">
+        <div class="task-block-num">①</div>
+        <div class="task-block-title">🔧 Triển khai & Quy hoạch</div>
+        <ul class="task-list">
+          <li>Chủ trì triển khai <b>hạ tầng mạng IP</b> và <b>BRCĐ</b> trên địa bàn.</li>
+          <li>Thẩm định quy hoạch, phương án triển khai trạm mới phục vụ SXKD.</li>
+          <li>Phối hợp <b>TTCN</b> thử nghiệm giải pháp mới; quản lý tài nguyên dự phòng <b>ƯCTT</b>.</li>
+          <li>Tiếp nhận, thẩm định, thực hiện yêu cầu dịch vụ <b>(SR)</b> từ đơn vị kinh doanh và hạ tầng.</li>
+          <li>Thẩm định bản vẽ khảo sát, thiết kế trạm; kiểm soát checklist, nghiệm thu trạm mới, hậu kiểm thiết kế.</li>
+        </ul>
+      </div>
+      <div class="task-block">
+        <div class="task-block-num">②</div>
+        <div class="task-block-title">⚙️ Vận hành · Tối ưu · Chất lượng</div>
+        <ul class="task-list">
+          <li>Đánh giá rủi ro tác động <b>(CAB)</b>; kịch bản <b>ƯCTT/XLSC</b>; tối ưu cảnh báo; xử lý sự cố leo thang từ <b>FO</b>.</li>
+          <li>Chủ trì kịch bản & tiến độ bảo dưỡng; rà soát tối ưu mạng; tìm nguyên nhân gốc.</li>
+          <li>Chủ trì nâng cấp, mở rộng, tối ưu mạng; tác động thử nghiệm & kỹ thuật phức tạp.</li>
+          <li>Đảm bảo <b>chất lượng mạng BRCĐ</b>; nâng chất lượng dịch vụ trên hạ tầng đối tác thứ cấp.</li>
+          <li>Đo kiểm định kỳ chất lượng BRCĐ; kiểm soát <b>KQI</b> truyền hình & internet.</li>
+          <li>Khai báo, tích hợp thiết bị mới; nâng cấp firmware, vá lỗi; dồn dịch vụ thuê bao thu hồi thiết bị.</li>
+          <li>Tự động hóa công việc thủ công; xây dựng chương trình đào tạo chuyên môn.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="org-bar">
+      <span class="org-bar-icon">🏢</span>
+      <span class="org-bar-text"><strong>TỔ CHỨC BỘ MÁY:</strong> Lãnh đạo phòng (Trưởng/Phó) + Trợ lý nghiệp vụ.</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION D: KSVHKT -->
+<section class="dept-section" id="ksvhkt">
+  <div class="section-num">D</div>
+  <div class="dept-section-inner">
+    <div class="dept-header">
+      <div class="dept-header-left">
+        <div class="dept-part-tag">Phần D</div>
+        <h2 class="dept-main-title">PHÒNG<br><span class="red">KIỂM SOÁT VHKT</span></h2>
+        <div class="dept-scope-box">
+          <p><strong>Phạm vi:</strong> Kiểm soát KPI/SLA mạng truy nhập · Nghiệm thu OS · Báo cáo & vật tư ƯCTT · Hỗ trợ tỉnh/TP.</p>
+        </div>
+      </div>
+      <div class="dept-header-right">
+        <div class="dept-outline-item">
+          <span class="outline-num">01</span>
+          <span class="outline-text">Kiểm soát KPI/SLA & nghiệm thu chất lượng bảo dưỡng OS</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">02</span>
+          <span class="outline-text">Báo cáo · Vật tư · Tài sản · Hỗ trợ tỉnh/TP</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tasks-grid tasks-grid-2">
+      <div class="task-block">
+        <div class="task-block-num">①</div>
+        <div class="task-block-title">⏱️ Kiểm soát KPI / SLA & Nghiệm thu</div>
+        <ul class="task-list">
+          <li>Kiểm soát, phân tích, đánh giá <b>KPI/SLA</b> về VHKT mạng truy nhập theo hợp đồng <b>OS</b>; phối hợp OS cải thiện.</li>
+          <li>Đánh giá, nghiệm thu tiến độ & chất lượng bảo dưỡng, sửa chữa của OS qua phê duyệt hình ảnh, Video call, kiểm tra hiện trường: nhà trạm, tuyến cáp truyền dẫn, tuyến cáp BRCĐ, tủ hộp cáp, điều hòa, máy phát điện, thông gió lọc bụi...</li>
+          <li>Kiểm soát chất lượng hạ tầng mạng lưới củng cố ngoài OS theo tần suất quy định.</li>
+          <li>Kiểm soát tiến độ, chất lượng bảo dưỡng nhà trạm thị trường nước ngoài qua phê duyệt hình ảnh <b>lớp 2</b>.</li>
+        </ul>
+      </div>
+      <div class="task-block">
+        <div class="task-block-num">②</div>
+        <div class="task-block-title">📊 Báo cáo · Vật tư · Tài sản · Hỗ trợ</div>
+        <ul class="task-list">
+          <li>Báo cáo <b>KPI/SLA</b>, tiến độ, chất lượng công việc OS về TTCN của TCT — đầy đủ, kịp thời.</li>
+          <li>Kiểm soát định kỳ tuần/tháng/quý vật tư, thiết bị ƯCTT của OS: cân kho; sai lệch hàng vật lý vs phần mềm; thu hồi vật tư; vật tư hỏng bất thường.</li>
+          <li>Kiểm tra, giám sát <b>lớp 2</b> quản lý tài sản hạ tầng mạng tại các tỉnh trong khu vực.</li>
+          <li>Hỗ trợ, tháo gỡ vướng mắc, cung cấp điều kiện đảm bảo cho Viettel tỉnh/TP và OS khắc phục tồn tại.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="org-bar">
+      <span class="org-bar-icon">🏢</span>
+      <span class="org-bar-text"><strong>TỔ CHỨC BỘ MÁY:</strong> Lãnh đạo phòng + Trợ lý nghiệp vụ.</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION E: HA TANG -->
+<section class="dept-section" id="ha-tang">
+  <div class="section-num">E</div>
+  <div class="dept-section-inner">
+    <div class="dept-header">
+      <div class="dept-header-left">
+        <div class="dept-part-tag">Phần E</div>
+        <h2 class="dept-main-title">PHÒNG<br><span class="red">HẠ TẦNG</span></h2>
+        <div class="dept-scope-box">
+          <p><strong>Phạm vi:</strong> Điều hành triển khai · Kiểm soát chất lượng · Nghiệm thu công trình.</p>
+        </div>
+      </div>
+      <div class="dept-header-right">
+        <div class="dept-outline-item">
+          <span class="outline-num">01</span>
+          <span class="outline-text">Điều hành triển khai công trình hạ tầng</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">02</span>
+          <span class="outline-text">Kiểm soát chất lượng thi công và nhà thầu</span>
+        </div>
+        <div class="dept-outline-item">
+          <span class="outline-num">03</span>
+          <span class="outline-text">Nghiệm thu công trình & bàn giao theo KPI</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tasks-grid tasks-grid-3">
+      <div class="task-block">
+        <div class="task-block-num">①</div>
+        <div class="task-block-title">🚀 Điều hành Triển khai</div>
+        <ul class="task-list">
+          <li>Chịu trách nhiệm tiến độ; xây dựng kế hoạch chi tiết tháng/quý/năm dựa trên khối lượng và vật tư từ <b>TCT</b>.</li>
+          <li>Điều hành đối tác thi công phối hợp Viettel tỉnh/TP nhận mặt bằng; cấp & theo dõi vật tư công trình.</li>
+          <li>Chủ trì khai báo truyền dẫn, tích hợp, phát sóng; lập biên bản phạt nhà thầu vi phạm (đại diện <b>Ban QLDAHTVT</b>).</li>
+          <li>Quản trị số liệu phần mềm liên thông; cảnh báo tiến độ thi công hàng ngày.</li>
+        </ul>
+      </div>
+      <div class="task-block">
+        <div class="task-block-num">②</div>
+        <div class="task-block-title">✅ Kiểm soát Chất lượng</div>
+        <ul class="task-list">
+          <li>Chủ trì cập nhật & phê duyệt hình ảnh chất lượng trên <b>phần mềm QLCL</b>.</li>
+          <li>Kiểm tra, đánh giá nhà thầu tư vấn giám sát về tiến độ, chất lượng, <b>ATLĐ</b>.</li>
+          <li>Xử lý vướng mắc; lập biên bản công việc phát sinh (khối lượng, vận chuyển, đền bù, <b>GPMB</b>...).</li>
+          <li>Lập biên bản đình chỉ thi công khi nhà thầu vi phạm ATLĐ/chất lượng; đảm bảo hồ sơ <b>QLCL</b> nghiệm thu thanh quyết toán.</li>
+          <li>Báo cáo, đánh giá chất lượng nhà thầu hàng tháng — gửi <b>Ban QLDAHTVT</b> làm cơ sở quy hoạch đối tác.</li>
+        </ul>
+      </div>
+      <div class="task-block">
+        <div class="task-block-num">③</div>
+        <div class="task-block-title">🏁 Nghiệm thu Công trình</div>
+        <ul class="task-list">
+          <li>Chủ trì kế hoạch nghiệm thu, bàn giao công trình đưa vào sử dụng theo <b>KPI</b>.</li>
+          <li>Điều hành thu hồi vật tư thừa, đối soát vật tư sau hoàn thành.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="org-bar">
+      <span class="org-bar-icon">🏢</span>
+      <span class="org-bar-text"><strong>TỔ CHỨC BỘ MÁY:</strong> Lãnh đạo phòng (Trưởng/Phó) + Trợ lý nghiệp vụ.</span>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING DARK SECTION -->
+<section class="section-dark">
+  <div class="section-dark-circuit"></div>
+  <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;text-align:center;">
+    <div class="section-label" style="justify-content:center">Kết thúc tài liệu</div>
+    <h2 class="section-title" style="color:white;margin-bottom:24px;">TRÂN TRỌNG<br><span style="color:var(--red)">CẢM ƠN!</span></h2>
+    <p style="font-size:16px;color:rgba(255,255,255,0.5);max-width:500px;margin:0 auto 40px;line-height:1.7;font-style:italic;">
+      Cảm ơn Quý Lãnh đạo và đồng nghiệp đã dành thời gian theo dõi.<br>
+      Mọi câu hỏi xin vui lòng trao đổi tại phần Q&A.
+    </p>
+    <div style="display:inline-block;border:1px solid rgba(204,0,0,0.4);padding:16px 32px;">
+      <p style="font-family:var(--font-mono);font-size:12px;color:var(--red);letter-spacing:2px;">
+        LIÊN HỆ: Phòng Đào tạo — Khối Nhân sự · Tổng Công ty Mạng lưới Viettel
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Viettel<span>Net</span></div>
+      <p style="font-family:var(--font-mono);font-size:11px;color:var(--gray);margin-top:8px;letter-spacing:0.5px;">
+        Tổng Công ty Mạng lưới Viettel
+      </p>
+    </div>
+    <div class="footer-meta">
+      <p>© 2025 Tổng Công ty Mạng lưới Viettel — Tài liệu nội bộ</p>
+      <p>Khối Nhân sự — Phòng Đào tạo · Báo cáo Ban Tổng Giám đốc</p>
+      <p>2025 — v1.0 · Không phân phối ra ngoài</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // SCROLL ANIMATIONS
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.dept-card, .task-block, .dept-outline-item').forEach(el => {
+    el.classList.add('fade-up');
+    observer.observe(el);
+  });
+
+  // NAV DOTS
+  const sections = ['hero','overview','truyen-dan','co-dien','ip-brcd','ksvhkt','ha-tang'];
+  const dots = document.querySelectorAll('.nav-dot');
+
+  function scrollTo(id) {
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const idx = sections.indexOf(e.target.id);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) sectionObserver.observe(el);
+  });
+
+  // STAGGER dept cards
+  document.querySelectorAll('.dept-card').forEach((card, i) => {
+    card.style.transitionDelay = `${i * 60}ms`;
+  });
+
+  // TASK BLOCKS STAGGER
+  document.querySelectorAll('.task-block').forEach((block, i) => {
+    block.style.transitionDelay = `${i * 80}ms`;
+  });
+</script>
+</body>
+</html>
